@@ -1,0 +1,51 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  TF_VAR_prefix: 'demo'
+  TF_VAR_resource_group: 'tf'
+  TF_VAR_location: 'East US'
+  TF_VAR_address_space: '192.10.10.0/16'
+  TF_VAR_subnet_prefix: '192.10.1.0/24'
+  TF_VAR_admin_username: 'demo'
+  TF_VAR_admin_password: 'demo1234'
+  TF_VAR_aws_region: 'us-east-1'
+
+stages:
+- stage: Terraform
+  jobs:
+  - job: Terraform
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
+        addToPath: true
+
+    - script: |
+        curl -LO https://raw.githubusercontent.com/tfsec/tfsec/master/scripts/install_linux.sh
+        chmod +x install_linux.sh
+        sudo ./install_linux.sh
+      displayName: 'Install tfsec'
+
+    - script: |
+        sudo apt-get install unzip
+        curl -LO https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
+        unzip terraform_1.0.0_linux_amd64.zip
+        sudo mv terraform /usr/local/bin/
+        terraform -v
+      displayName: 'Install Terraform'
+
+    - script: terraform init
+      displayName: 'Terraform Init'
+
+    - script: terraform plan -var-file=demo.tfvars
+      displayName: 'Terraform Plan'
+
+    - script: terraform apply -var-file=demo.tfvars -auto-approve
+      displayName: 'Terraform Apply'
+
+    - script: tfsec .
+      displayName: 'Run tfsec'
