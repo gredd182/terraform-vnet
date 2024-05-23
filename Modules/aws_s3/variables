@@ -2,7 +2,7 @@ variable "bucket_name" {
   description = "s3 bucket name"
   type = string
 }
-# variable "aws_region" {
-#   description = "aws region name"
-#   type = string
-# }
+variable "aws_region" {
+  description = "aws region name"
+  type = string 
+}
