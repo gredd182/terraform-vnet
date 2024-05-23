@@ -26,6 +26,10 @@ variable "admin_password" {
   description = "Pwd of vm"
   type = string
 }
+variable "bucket_name" {
+  description = "s3 bucket name"
+  type = string
+}
 variable "aws_region" {
   description = "AWS region"
   type = string
