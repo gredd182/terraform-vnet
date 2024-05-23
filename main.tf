@@ -28,5 +28,5 @@ module "azure_vm" {
 module "aws_s3" {
   source            = "./modules/aws_s3"
   bucket_name       = "${var.prefix}-bucket"
-#   aws_region        = var.aws_region
+  aws_region        = var.aws_region
 }
